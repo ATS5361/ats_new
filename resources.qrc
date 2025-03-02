@@ -1,0 +1,22 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="icons">
+        <file alias="login-icon.png">login-icon.png</file>
+        <file alias="close-icon.png">close-icon.png</file>
+	  <file alias="settings-icon.png">settings-icon.png</file>
+        <file alias="user-icon.png">user-icon.png</file>
+ 	  <file alias="database-icon.png">database-icon.png</file>
+	  <file alias="drawer-image-1.jpg">drawer-image-1.jpeg</file>
+	  <file alias="drawer-image-2.jpg">drawer-image-2.jpeg</file>
+<file alias="drawer-image-2.png">drawer-image-2.png</file>
+<file alias="drawer-image-3.jpg">drawer-image-3.jpeg</file>
+<file alias="drawer-image-4.jpg">drawer-image-4.jpeg</file>
+<file alias="drawer-image-5.jpg">drawer-image-5.jpeg</file>
+<file alias="drawer-image-6.jpg">drawer-image-6.jpeg</file>    
+<file alias="back-icon.png">back-icon.png</file>    
+<file alias="mechanic-icon.png">mechanic-icon.png</file>  
+<file alias="tai-logo.png">tai-logo.png</file>    
+
+
+</qresource>
+</RCC>

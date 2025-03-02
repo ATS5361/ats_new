@@ -1,0 +1,6 @@
+*.pyc
+__pycache__/
+pt_files/
+photos
+rangeler
+detection/sonuclar/
