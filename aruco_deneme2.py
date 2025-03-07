@@ -3,7 +3,11 @@ import cv2
 import cv2.aruco as aruco
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap, QImage, QIcon
+
+""" ÇALIŞAN VERSİYON """
+
+global marker_dict, current_marker
 
 class CameraThread(QThread):
     new_frame = pyqtSignal(object, object, object)  # Frame, Marker IDs, Corners
@@ -34,48 +38,28 @@ class ArUcoTesting(QWidget):
     marker_dict = {0: "Cekmece1-1",
                    1: "Cekmece1-2",
                    2: "Cekmece1-3",
-                   3: "Cekmece2-1",
+                   3: "Cekmece2-3",
                    4: "Cekmece2-2",
-                   5: "Cekmece2-3",
-                   6: "Cekmece3-1",
+                   5: "Cekmece2-1",
+                   6: "Cekmece3-3",
                    7: "Cekmece3-2",
-                   8: "Cekmece3-3",
-                   9: "Cekmece4-1",
+                   8: "Cekmece3-1",
+                   9: "Cekmece4-3",
                    10: "Cekmece4-2",
-                   11: "Cekmece4-3",
-                   12: "Cekmece5-1",
+                   11: "Cekmece4-1",
+                   12: "Cekmece5-3",
                    13: "Cekmece5-2",
-                   14: "Cekmece5-3",
+                   14: "Cekmece5-1",
                    15: "Cekmece6-1",
                    16: "Cekmece6-2",
                    17: "Cekmece6-3",
-                   }
-    
-    marker_dict_v2 = {0: "Cekmece1-1",
-                   1: "Cekmece1-2",
-                   2: "Cekmece1-3",
-                   3: "Cekmece2-1",
-                   4: "Cekmece2-2",
-                   5: "Cekmece2-3",
-                   6: "Cekmece3-1",
-                   7: "Cekmece3-2",
-                   8: "Cekmece3-3",
-                   9: "Cekmece4-1",
-                   10: "Cekmece4-2",
-                   11: "Cekmece4-3",
-                   12: "Cekmece5-1",
-                   13: "Cekmece5-2",
-                   14: "Cekmece5-3",
-                   15: "Cekmece6-1",
-                   16: "Cekmece6-2",
-                   17: "Cekmece6-3",
-                   } ## Value'lar list olarak kaydedilebilir
+                   } ## Optimizasyon Önerisi: Value'lar list olarak kaydedilebilir
 
     def __init__(self, width=800, height=600):
         super().__init__()
         self.setWindowTitle("ArUco Testing")
         self.setGeometry(100, 100, 1000, 500)
-        
+        self.setWindowIcon(QIcon("images/tai-logo-color.png"))
         self.initUI()
         
         # ArUco tanımları
@@ -101,36 +85,50 @@ class ArUcoTesting(QWidget):
         main_layout = QVBoxLayout()
         self.screenlabel1 = QLabel("Kamera 1")
         self.screenlabel2 = QLabel("Kamera 2")
+        self.screenlabel1.setFixedSize(1028, 320)
+        self.screenlabel2.setFixedSize(1028, 320)
         
         main_layout.addWidget(self.screenlabel1)
         main_layout.addWidget(self.screenlabel2)
         self.setLayout(main_layout)
+    
+    def keyPressEvent(self, event):
+        print(f"Key pressed: {event.key()}")
+        if event.key() == Qt.Key_Escape:
+            print("ESC tıklandı. Uygulama kapanıyor...")
+            QApplication.instance().quit()
 
     def process_frame1(self, frame, ids, corners):
-        if ids is not None:
-            aruco.drawDetectedMarkers(frame, corners, ids)
-            for i in range(len(ids)):
-                marker_id = ids[i][0]
-                if marker_id not in self.detected_ids:  # Eğer marker daha önce tanımlanmadıysa
-                    self.detected_ids.add(marker_id)  # Marker ID'yi kaydet
-                    print(f"Kamera 1 - Yeni Marker ID: {marker_id}")  # Yeni marker ID'sini yazdır
-                elif marker_id != self.current_marker:  # Eğer marker zaten tanındı fakat farklı bir marker göründü
-                    self.current_marker = marker_id  # Yeni marker'ı current_marker olarak kaydet
-                    print(f"Current Drawer: {self.marker_dict[marker_id]}")  # Yeni current marker ID'sini yazdır
-        self.display_image(self.screenlabel1, frame)
+        try:
+            if ids is not None:
+                aruco.drawDetectedMarkers(frame, corners, ids)
+                for i in range(len(ids)):
+                    marker_id = ids[i][0]
+                    if marker_id not in self.detected_ids and marker_id <= 17:  # Eğer marker daha önce tanımlanmadıysa
+                        self.detected_ids.add(marker_id)  # Marker ID'yi kaydet
+                        print(f"{self.marker_dict[marker_id]}") # Yeni marker ID'sini yazdır
+                    elif marker_id != self.current_marker:  # Eğer marker zaten tanındı fakat farklı bir marker göründü
+                        self.current_marker = marker_id  # Yeni marker'ı current_marker olarak kaydet
+                        print(f"{self.marker_dict[marker_id]}")  # Yeni current marker ID'sini yazdır
+            self.display_image(self.screenlabel1, frame)
+        except KeyError as err:
+            pass
 
     def process_frame2(self, frame, ids, corners):
-        if ids is not None:
-            aruco.drawDetectedMarkers(frame, corners, ids)
-            for i in range(len(ids)):
-                marker_id = ids[i][0]
-                if marker_id not in self.detected_ids:  # Eğer marker daha önce tanımlanmadıysa
-                    self.detected_ids.add(marker_id)  # Marker ID'yi kaydet
-                    print(f"Kamera 2 - Yeni Marker ID: {marker_id}")  # Yeni marker ID'sini yazdır
-                elif marker_id != self.current_marker:  # Eğer marker zaten tanındı fakat farklı bir marker göründü
-                    self.current_marker = marker_id  # Yeni marker'ı current_marker olarak kaydet
-                    print(f"Current Drawer: {self.marker_dict[marker_id]}")  # Yeni current marker ID'sini yazdır
-        self.display_image(self.screenlabel2, frame)
+        try:
+            if ids is not None:
+                aruco.drawDetectedMarkers(frame, corners, ids)
+                for i in range(len(ids)):
+                    marker_id = ids[i][0]
+                    if marker_id not in self.detected_ids and marker_id <= 17:  # Eğer marker daha önce tanımlanmadıysa
+                        self.detected_ids.add(marker_id)  # Marker ID'yi kaydet
+                        print(f"{self.marker_dict[marker_id]}") # Yeni marker ID'sini yazdır
+                    elif marker_id != self.current_marker:  # Eğer marker zaten tanındı fakat farklı bir marker göründü
+                        self.current_marker = marker_id  # Yeni marker'ı current_marker olarak kaydet
+                        print(f"{self.marker_dict[marker_id]}")  # Yeni current marker ID'sini yazdır
+            self.display_image(self.screenlabel2, frame)
+        except KeyError as err:
+            pass
 
     def display_image(self, label, frame):
         """ OpenCV görüntüsünü QLabel'e çevirip gösterir. """
